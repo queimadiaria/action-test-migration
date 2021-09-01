@@ -41,4 +41,9 @@ runs:
       shell: bash
       env:
         PORT: ${{ inputs.service_port }}
-      run: sleep 15 && curl -sf http://localhost:${PORT}/health || (docker-compose logs api && exit 1)
+      run: |
+        echo  "http://localhost:${PORT}/health"
+        sleep 15 \
+        && curl -sf \
+          http://localhost:${PORT}/health \
+        || (docker-compose logs api && exit 1)
