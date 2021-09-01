@@ -40,5 +40,5 @@ runs:
     - name: Check API healthckeck
       shell: bash
       env:
-        PORT: 
+        PORT: ${{ inputs.service_port }}
       run: sleep 15 && curl -sf http://localhost:${PORT}/health || (docker-compose logs api && exit 1)
