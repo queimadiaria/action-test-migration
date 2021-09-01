@@ -42,6 +42,7 @@ runs:
       env:
         PORT: ${{ inputs.service_port }}
       run: |
+        echo ${{input.service_port}}
         echo  "http://localhost:${PORT}/health"
         sleep 15 \
         && curl -sf \
