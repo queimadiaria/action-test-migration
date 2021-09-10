@@ -22,6 +22,7 @@ runs:
       run: |
         echo $PATH
         cd $PATH
+        
         cat <<EOF > .npmrc
         @queimadiaria:registry=https://npm.pkg.github.com/
         //npm.pkg.github.com/:_authToken=${PAT}
@@ -34,6 +35,7 @@ runs:
         PATH: ${{ github.workspace }}
       shell: bash
       run: |
+        echo $PATH
         cd ${PATH}
 
         if test -f "${FILE}"; then
