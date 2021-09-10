@@ -30,6 +30,8 @@ runs:
         FILE: ${{ github.workspace }}/config/environment.config.sh
       shell: bash
       run: |
+        echo "${FILE}";
+        
         if test -f "${FILE}"; then
           bash ${FILE} 
           docker-compose up -d --build
