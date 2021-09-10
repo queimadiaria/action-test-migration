@@ -18,10 +18,10 @@ runs:
       shell: bash
       env:
         PAT: ${{ inputs.access_token }}
-        PATH: ${{ github.workspace }}
+        WORKSPACE: ${{ github.workspace }}
       run: |
-        echo $PATH
-        cd $PATH
+        echo $WORKSPACE
+        cd $WORKSPACE
         
         cat <<EOF > .npmrc
         @queimadiaria:registry=https://npm.pkg.github.com/
@@ -32,11 +32,11 @@ runs:
       env:
         ENVIRONMENT: ""
         FILE: config/environment.config.sh
-        PATH: ${{ github.workspace }}
+        WORKSPACE: ${{ github.workspace }}
       shell: bash
       run: |
-        echo $PATH
-        cd ${PATH}
+        echo $WORKSPACE
+        cd ${WORKSPACE}
 
         if test -f "${FILE}"; then
           bash ${FILE} 
