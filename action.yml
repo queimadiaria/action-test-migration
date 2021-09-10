@@ -27,7 +27,7 @@ runs:
     - name: Run Test Migration container
       env:
         ENVIRONMENT: ""
-        FILE: config/environment.config.sh
+        FILE: ${{ github.workspace }}/config/environment.config.sh
       shell: bash
       run: |
         if test -f "${FILE}"; then
