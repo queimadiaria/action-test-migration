@@ -20,8 +20,9 @@ runs:
         PAT: ${{ inputs.access_token }}
         PATH: ${{ github.workspace }}
       run: |
+        echo $PATH
         cd $PATH
-        cat>.npmrc<<EOF
+        cat <<EOF > .npmrc
         @queimadiaria:registry=https://npm.pkg.github.com/
         //npm.pkg.github.com/:_authToken=${PAT}
         EOF
@@ -34,7 +35,7 @@ runs:
       shell: bash
       run: |
         cd ${PATH}
-        
+
         if test -f "${FILE}"; then
           bash ${FILE} 
           docker-compose -f $DOCKER_COMPOSE  up -d --build 
