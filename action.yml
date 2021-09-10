@@ -18,8 +18,9 @@ runs:
       shell: bash
       env:
         PAT: ${{ inputs.access_token }}
+        PATH: ${{ github.workspace }}
       run: |
-        cat <<EOF > .npmrc
+        cat <<EOF > ${PATH}/.npmrc
         @queimadiaria:registry=https://npm.pkg.github.com/
         //npm.pkg.github.com/:_authToken=${PAT}
         EOF
@@ -28,13 +29,15 @@ runs:
       env:
         ENVIRONMENT: ""
         FILE: ${{ github.workspace }}/config/environment.config.sh
+        DOCKER_COMPOSE: ${{ github.workspace }}/docker-compose.yml
       shell: bash
       run: |
-        echo "${FILE}";
-        
+        [ -f "${DOCKER_COMPOSE}" ] && echo $DOCKER_COMPOSE
+        [ -f "${FILE}" ] && echo $FILE
+
         if test -f "${FILE}"; then
           bash ${FILE} 
-          docker-compose up -d --build
+          docker-compose -f $DOCKER_COMPOSE  up -d --build 
         else
           echo "The File ${FILE} doesn't exitis"
         fi
