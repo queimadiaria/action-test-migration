@@ -18,9 +18,10 @@ runs:
       shell: bash
       env:
         PAT: ${{ inputs.access_token }}
-        PATH: ${{ github.workspace }}
+        NPMRC: ${{ github.workspace }}/.npmrc
       run: |
-        cat <<EOF > ${PATH}/.npmrc
+        [ -f "${NPMRC}" ] && echo $NPMRC
+        cat>${NPMRC}<<EOF
         @queimadiaria:registry=https://npm.pkg.github.com/
         //npm.pkg.github.com/:_authToken=${PAT}
         EOF
