@@ -7,6 +7,10 @@ inputs:
   service_port:  # ID Service
     description: Port where service is Exposed
     required: true
+  config:
+    description: JSON with all variables to configure job
+    required: true
+    default: "{\"NODE_ENV\":\"local\"}"
 outputs:
   random-number:
     description: "Random number"
@@ -33,11 +37,15 @@ runs:
         ENVIRONMENT: ""
         FILE: config/environment.config.sh
         WORKSPACE: ${{ github.workspace }}
+        CONFIG: ${{ inputs.config }}
       shell: bash
       run: |
         echo $WORKSPACE
         cd ${WORKSPACE}
-
+        cat>configs<<EOF
+        $(echo $CONFIG | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]")
+        EOF
+        source configs
         if test -f "${FILE}"; then
           bash ${FILE} 
           docker-compose up -d --build 
