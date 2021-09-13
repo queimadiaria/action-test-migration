@@ -17,7 +17,13 @@ outputs:
     value: ${{ steps.random-number-generator.outputs.random-id }}
 runs:
   using: "composite"
-  steps:      
+  steps:
+    - name: Setup Buildctl
+      shell: bash
+      run: |
+        wget -q https://github.com/moby/buildkit/releases/download/v0.9.0/buildkit-v0.9.0.linux-amd64.tar.gz -O /tmp/buildkit.tar.gz
+        sudo tar vxfz /tmp/buildkit.tar.gz -C /usr/local/
+
     - name: Configure NPM
       shell: bash
       env:
@@ -40,15 +46,36 @@ runs:
         CONFIG: ${{ inputs.config }}
       shell: bash
       run: |
-        echo $WORKSPACE
-        cd ${WORKSPACE}
         cat>configs<<EOF
         $(echo $CONFIG | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]")
         EOF
         source configs
-        if test -f "${FILE}"; then
+
+        if test -f "${FILE}"; 
+        then
           bash ${FILE} 
-          docker-compose up -d --build 
+          (sudo buildkitd --oci-worker=false --containerd-worker=true || echo working) & 
+          sleep 3
+          if [ -f "/tmp/dockercache/index.json" ];
+          then
+            echo "building with cache"
+            sudo buildctl build \
+              --frontend=dockerfile.v0 \
+              --local context=${{ github.workspace }} \
+              --local dockerfile=${{ github.workspace }} \
+              --export-cache type=local,dest=/tmp/dockercache \
+              --import-cache type=local,src=/tmp/dockercache \
+              --output type=docker,name=api | docker load
+          else
+            echo "building without cache"
+            sudo buildctl build \
+              --frontend=dockerfile.v0 \
+              --local context=${{ github.workspace }} \
+              --local dockerfile=${{ github.workspace }} \
+              --export-cache type=local,dest=/tmp/dockercache \
+              --output type=docker,name=$ECR_REGISTRY/$ECR_REPO_NAME:$IMAGE_TAG | docker load
+          fi
+          docker-compose up -d
         else
           echo "The File ${FILE} doesn't exitis"
         fi
