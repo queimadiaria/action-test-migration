@@ -73,7 +73,7 @@ runs:
               --local context=${{ github.workspace }} \
               --local dockerfile=${{ github.workspace }} \
               --export-cache type=local,dest=/tmp/dockercache \
-              --output type=docker,name=$ECR_REGISTRY/$ECR_REPO_NAME:$IMAGE_TAG | docker load
+              --output type=docker,name=api | docker load
           fi
           docker-compose up -d
         else
