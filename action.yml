@@ -11,6 +11,10 @@ inputs:
     description: JSON with all variables to configure job
     required: true
     default: "{\"NODE_ENV\":\"local\"}"
+  sleep:
+    description: sleep time
+    required: true
+    default: 15
 outputs:
   random-number:
     description: "Random number"
@@ -87,7 +91,7 @@ runs:
       run: |
         echo ${{inputs.service_port}}
         echo  "http://localhost:${PORT}/health"
-        sleep 15 \
+        sleep ${{ inputs.sleep }} \
         && curl -sf \
           http://localhost:${PORT}/health \
         || (docker-compose logs api && exit 1)
