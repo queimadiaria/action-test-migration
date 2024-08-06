@@ -79,7 +79,7 @@ runs:
               --export-cache type=local,dest=/tmp/dockercache \
               --output type=docker,name=api | docker load
           fi
-          docker-compose up -d
+          docker compose up -d
         else
           echo "The File ${FILE} doesn't exitis"
         fi
@@ -94,4 +94,4 @@ runs:
         sleep ${{ inputs.sleep }} \
         && curl -sf \
           http://localhost:${PORT}/health \
-        || (docker-compose logs api && exit 1)
+        || (docker compose logs api && exit 1)
