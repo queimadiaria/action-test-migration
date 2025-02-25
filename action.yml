@@ -69,16 +69,15 @@ runs:
               --local dockerfile=${{ github.workspace }} \
               --export-cache type=local,dest=/tmp/dockercache \
               --import-cache type=local,src=/tmp/dockercache \
-              --output type=docker,name=api | docker load
+              --output type=docker,name=api | docker import - api
           else
             echo "building without cache"
             sudo buildctl build \
               --frontend=dockerfile.v0 \
               --local context=${{ github.workspace }} \
               --local dockerfile=${{ github.workspace }} \
-              --no-cache \
               --export-cache type=local,dest=/tmp/dockercache \
-              --output type=docker,name=api | docker load
+              --output type=docker,name=api | docker import - api
           fi
           docker compose up -d
         else
