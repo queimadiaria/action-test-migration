@@ -76,6 +76,7 @@ runs:
               --frontend=dockerfile.v0 \
               --local context=${{ github.workspace }} \
               --local dockerfile=${{ github.workspace }} \
+               --no-cache \
               --export-cache type=local,dest=/tmp/dockercache \
               --output type=docker,name=api | docker load
           fi
