@@ -58,7 +58,7 @@ runs:
         if test -f "${FILE}"; 
         then
           bash ${FILE} 
-          (sudo buildkitd --oci-worker=false --containerd-worker=true || echo working) & 
+          (sudo buildkitd --oci-worker=true --containerd-worker=false || echo working) & 
           sleep 3
           if [ -f "/tmp/dockercache/index.json" ];
           then
